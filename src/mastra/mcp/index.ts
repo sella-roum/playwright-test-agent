@@ -46,3 +46,18 @@ export const qaAdviserAgentMcp = new MCPClient({
 		},
 	},
 });
+
+export const chromeDevToolsMcp = new MCPClient({
+	id: "chrome-devtools-mcp-client",
+	servers: {
+		devtools: {
+			command: "npx",
+			args: [
+				"-y",
+				"chrome-devtools-mcp@latest",
+				"--browser-url", // 既存のブラウザにHTTP接続
+				`http://localhost:${DEBUG_PORT}`,
+			],
+		},
+	},
+});

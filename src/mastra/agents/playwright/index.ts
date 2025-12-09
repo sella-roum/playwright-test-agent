@@ -2,10 +2,11 @@ import { createCerebras } from "@ai-sdk/cerebras";
 import { Agent } from "@mastra/core/agent";
 import { fastembed } from "@mastra/fastembed";
 import { Memory } from "@mastra/memory";
-import { playwrightMcp, qaAdviserAgentMcp } from "../../mcp";
+import { chromeDevToolsMcp, playwrightMcp, qaAdviserAgentMcp } from "../../mcp";
 import {
 	PLAYWRIGHT_BROWSER_AGENT_EXECUTIVE_INSTRUCTIONS,
 	QA_ADVISER_AGENT_INSTRUCTIONS,
+	TECHNICAL_FORENSICS_AGENT_INSTRUCTIONS,
 } from "./prompts";
 
 const CEREBRAS_API_KEY = process.env.CEREBRAS_API_KEY ?? "";
@@ -83,4 +84,25 @@ export const qaAdviserAgent = new Agent({
 	instructions: QA_ADVISER_AGENT_INSTRUCTIONS,
 	model: cerebras(CEREBRAS_MODEL_NAME),
 	tools: allowedTools,
+});
+
+export const forensicsAgent = new Agent({
+	id: "technical-forensics-agent",
+	name: "Technical Forensics Agent",
+	description:
+		"ブラウザのコンソールログ、ネットワーク通信、パフォーマンス情報を分析し、技術的なエラー原因を特定するエージェントです。",
+	maxRetries: 20,
+	memory: new Memory({
+		embedder: fastembed,
+		options: {
+			lastMessages: 10,
+			workingMemory: {
+				enabled: true,
+			},
+			semanticRecall: false,
+		},
+	}),
+	instructions: TECHNICAL_FORENSICS_AGENT_INSTRUCTIONS,
+	model: cerebras(CEREBRAS_MODEL_NAME),
+	tools: await chromeDevToolsMcp.getTools(),
 });
