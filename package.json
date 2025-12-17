@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "biome lint --write src",
     "format": "biome format --write src",
-    "check": "biome check --write src",
+    "check": "biome check --write src && tsc",
     "dev": "mastra dev",
     "build": "mastra build"
   },

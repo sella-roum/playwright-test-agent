@@ -8,6 +8,9 @@ import {
 	PLAYWRIGHT_BROWSER_AGENT_EXECUTIVE_INSTRUCTIONS,
 	QA_ADVISER_AGENT_INSTRUCTIONS,
 	TECHNICAL_FORENSICS_AGENT_INSTRUCTIONS,
+	TEST_EXECUTOR_INSTRUCTIONS,
+	TEST_PLANNER_INSTRUCTIONS,
+	TEST_VERIFIER_INSTRUCTIONS,
 } from "./prompts";
 
 // ---------------------------------------------------------
@@ -108,4 +111,31 @@ export const forensicsAgent = new Agent({
 	instructions: TECHNICAL_FORENSICS_AGENT_INSTRUCTIONS,
 	model: failoverModel,
 	tools: await chromeDevToolsMcp.getTools(),
+});
+
+export const testPlannerAgent = new Agent({
+	id: "test-planner-agent",
+	name: "Test Planner",
+	description: "ユーザーの指示をテスト手順に分解するエージェント",
+	instructions: TEST_PLANNER_INSTRUCTIONS,
+	model: failoverModel,
+	// ツールは不要（思考のみ）
+});
+
+export const testExecutorAgent = new Agent({
+	id: "test-executor-agent",
+	name: "Test Executor",
+	description: "手順書に従ってブラウザ操作を実行するエージェント",
+	instructions: TEST_EXECUTOR_INSTRUCTIONS,
+	model: failoverModel,
+	tools: await playwrightMcp.getTools(), // ブラウザ操作ツールのみ
+});
+
+export const testVerifierAgent = new Agent({
+	id: "test-verifier-agent",
+	name: "Test Verifier",
+	description: "操作結果を検証するエージェント",
+	instructions: TEST_VERIFIER_INSTRUCTIONS,
+	model: failoverModel,
+	tools: await playwrightMcp.getTools(), // スナップショット用
 });
