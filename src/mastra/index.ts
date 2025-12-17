@@ -1,7 +1,7 @@
-import { createLogger } from "@mastra/core/logger";
+import { ConsoleLogger } from "@mastra/core/logger";
 import { Mastra } from "@mastra/core/mastra";
 import { LibSQLStore } from "@mastra/libsql";
-import { playwrightExecutiveAgent, qaAdviserAgent, forensicsAgent } from "./agents/playwright";
+import { playwrightExecutiveAgent, qaAdviserAgent } from "./agents/playwright";
 
 // LibSQLの設定（ローカルファイル mastra.db に保存）
 const storage = new LibSQLStore({
@@ -9,8 +9,8 @@ const storage = new LibSQLStore({
 });
 
 export const mastra = new Mastra({
-	agents: { playwrightExecutiveAgent, qaAdviserAgent, forensicsAgent },
-	logger: createLogger({
+	agents: { playwrightExecutiveAgent, qaAdviserAgent },
+	logger: new ConsoleLogger({
 		name: "Mastra",
 		level: "info",
 	}),
